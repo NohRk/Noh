@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>N.O.H</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Figtree:wght@400;600&display=swap">
+<style>
+:root{--bg:#e8f1f0;--card:#f7fbfa;--ink:#12303a;--soft:#4b6a72;--lagoon:#0e7c86;--mango:#f2a900;--ok:#2f8f4e;--near:#e0a100;--miss:#9fb3b7;--line:#c5d9d9;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1e24;--card:#14303a;--ink:#e6f2f1;--soft:#9bb8bd;--lagoon:#4fc3cc;--mango:#ffc83d;--ok:#4cc473;--near:#e8b422;--miss:#4a6469;--line:#25454f}}
+:root[data-theme="dark"]{--bg:#0d1e24;--card:#14303a;--ink:#e6f2f1;--soft:#9bb8bd;--lagoon:#4fc3cc;--mango:#ffc83d;--ok:#4cc473;--near:#e8b422;--miss:#4a6469;--line:#25454f}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.55 Figtree,system-ui,sans-serif}
+main{max-width:980px;margin:0 auto;padding:20px 16px 60px}
+h1,h2,h3{font-family:"Bricolage Grotesque",Figtree,system-ui,sans-serif;margin:0;line-height:1.1}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.top h1{font-size:1.7rem;font-weight:800;color:var(--lagoon)}
+.exp{display:block;font:400 .85rem Figtree,system-ui,sans-serif;color:var(--soft)}
+.clock{font:800 3rem "Bricolage Grotesque",sans-serif;margin:4px 0}
+.b{padding:10px 12px;border-radius:12px;margin:8px 0;white-space:pre-wrap}
+.b.user{background:var(--bg);margin-left:12%}
+.b.ai{border:1px solid var(--line)}
+#chat{max-height:50vh;overflow:auto}
+textarea{width:100%;min-height:90px;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:inherit;font:inherit}
+#q{flex:1 1 220px}
+#msList{max-height:45vh;overflow:auto;margin:10px 0}
+.opts input{width:100%}
+button,select,input{font:inherit;color:inherit}
+button{cursor:pointer;border:1px solid var(--line);background:var(--card);padding:8px 14px;border-radius:10px}
+button:hover{border-color:var(--lagoon)}
+button.pri{background:var(--lagoon);color:var(--bg);border-color:var(--lagoon);font-weight:600}
+:focus-visible{outline:3px solid var(--mango);outline-offset:2px}
+.hero{padding:44px 0 36px}
+.date{color:var(--soft);margin:0 0 14px}
+.quote{font:800 clamp(1.8rem,5.5vw,3.4rem)/1.12 "Bricolage Grotesque",sans-serif;margin:0;max-width:20em;text-wrap:balance}
+.who{margin:18px 0 0;color:var(--lagoon);font-weight:600}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 22px}
+nav a{padding:6px 14px;border-radius:99px;background:var(--card);border:1px solid var(--line);color:var(--ink);text-decoration:none;font-size:.95rem}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:760px){.grid{grid-template-columns:1fr}}
+section{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px}
+section.wide{grid-column:1/-1}
+section h2{font-size:1.45rem;margin-bottom:14px}
+section h3{font-size:1.05rem;margin:14px 0 6px}
+.tip{display:flex;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+.tip:first-of-type{border-top:0}
+.tip b{min-width:6.2em;color:var(--lagoon)}
+.row{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-width:300px;margin-bottom:6px}
+.t{aspect-ratio:1;display:grid;place-items:center;border-radius:10px;border:2px solid var(--line);font:700 1.4rem "Bricolage Grotesque",sans-serif}
+.t.g{background:var(--ok);border-color:var(--ok);color:#fff}
+.t.y{background:var(--near);border-color:var(--near);color:#1b1500}
+.t.x{background:var(--miss);border-color:var(--miss);color:#fff}
+.inline{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+input[type=text],input[type=password],select{padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);min-width:0}
+input.letters{text-transform:uppercase;letter-spacing:.25em;width:9em}
+.opts{display:grid;gap:8px;margin-top:10px}
+.opts button{text-align:left}
+.opts .good{background:var(--ok);color:#fff;border-color:var(--ok)}
+.opts .bad{background:var(--miss);color:#fff}
+.msg{margin:10px 0 0;font-weight:600}
+.src{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.src a{display:block;padding:12px 14px;border:1px solid var(--line);border-radius:12px;color:var(--ink);text-decoration:none;background:var(--bg)}
+.src a:hover{border-color:var(--lagoon)}
+.src small{display:block;color:var(--soft)}
+.hl{padding:8px 0;border-top:1px solid var(--line)}
+.hl a{color:var(--lagoon)}
+.note{color:var(--soft);font-size:.9rem;margin-top:12px}
+#admin{display:none;position:fixed;inset:auto 12px calc(12px + env(safe-area-inset-bottom,0px)) 12px;max-width:520px;margin-left:auto;background:var(--card);border:2px solid var(--lagoon);border-radius:16px;padding:16px;z-index:20;max-height:80vh;overflow:auto}
+#admin.open{display:block}
+#admin h2{font-size:1.2rem;margin-bottom:10px}
+#admin .inline input[type=text]{flex:1 1 140px}
+@media (prefers-reduced-motion:no-preference){.quote{animation:in .6s ease both}@keyframes in{from{opacity:0;transform:translateY(8px)}}}
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+<main>
+<div class="top"><h1>N.O.H<span class="exp">Nouveaux Objectifs, Horizons</span></h1><button id="adminBtn">Actualiser le site</button></div>
+
+<header class="hero">
+<p class="date" id="date"></p>
+<blockquote class="quote" id="quote"></blockquote>
+<p class="who" id="who"></p>
+</header>
+
+<nav aria-label="Rubriques"><a href="#jeux">Jeux</a><a href="#conseils">Bien-être</a><a href="#horoscope">Horoscope</a><a href="#actus">Actualités</a><a href="#etudiant">Espace étudiant</a><a href="#assistant">Assistant IA</a><a href="#compte">Compte</a><a href="#messages">Messages</a></nav>
+
+<div class="grid">
+<section id="jeux" class="wide"><h2>Les jeux du jour</h2>
+<div class="grid" style="gap:24px">
+<div><h3>Mot-Maître</h3><p class="note" style="margin:0 0 10px">Trouvez le mot de 5 lettres en 6 essais. Vert : bien placée. Jaune : présente ailleurs.</p>
+<div id="board"></div>
+<div class="inline"><input class="letters" id="guess" type="text" maxlength="5" autocomplete="off" autocapitalize="characters" aria-label="Votre mot de 5 lettres"><button class="pri" id="go">Valider</button></div>
+<p class="msg" id="mm"></p></div>
+<div>
+<h3>Devinette</h3><p id="riddle" style="margin:0"></p>
+<div class="inline"><button id="showR">Voir la réponse</button></div><p class="msg" id="ans"></p>
+<h3>Culture générale</h3><p id="tq" style="margin:0"></p><div class="opts" id="opts"></div><p class="msg" id="tr"></p>
+</div></div></section>
+
+<section id="conseils"><h2>Conseils bien-être</h2><div id="tips"></div></section>
+
+<section id="horoscope"><h2>Horoscope</h2>
+<select id="sign" aria-label="Votre signe"></select>
+<h3 id="signName"></h3><div id="horo"></div>
+<p class="note">Pour le plaisir : généré chaque jour, sans valeur de prédiction.</p></section>
+
+<section id="actus" class="wide"><h2>Actualités</h2>
+<div id="hl"></div>
+<h3>Madagascar</h3>
+<div class="src">
+<a href="https://www.midi-madagasikara.mg" target="_blank" rel="noopener">Midi Madagasikara<small>Quotidien malgache</small></a>
+<a href="https://www.lexpress.mg" target="_blank" rel="noopener">L’Express de Madagascar<small>Quotidien malgache</small></a>
+<a href="https://www.newsmada.com" target="_blank" rel="noopener">Newsmada<small>Actualités du pays</small></a></div>
+<h3>International</h3>
+<div class="src">
+<a href="https://www.rfi.fr/fr/afrique/" target="_blank" rel="noopener">RFI Afrique<small>Radio France Internationale</small></a>
+<a href="https://www.bbc.com/afrique" target="_blank" rel="noopener">BBC Afrique<small>En français</small></a>
+<a href="https://www.lemonde.fr/international/" target="_blank" rel="noopener">Le Monde<small>International</small></a></div>
+<p class="note">Les liens ouvrent les derniers titres de chaque média. Les titres que vous ajoutez en mode admin apparaissent ci-dessus.</p></section>
+
+<section id="etudiant" class="wide"><h2>Espace étudiant</h2>
+<div class="grid" style="gap:24px">
+<div><h3>Minuteur de révision</h3><div class="clock" id="pomo" role="timer">25:00</div>
+<div class="inline" style="margin-top:0"><button class="pri" id="pGo">Démarrer</button><button id="pPause">Pause</button><button id="p25">25 min</button><button id="p5">5 min</button></div><p class="msg" id="pmsg"></p>
+<h3>Calculer ma moyenne</h3><textarea id="notes" aria-label="Notes et coefficients" placeholder="Une matière par ligne : note coefficient
+Exemple :
+14 2
+12,5 3"></textarea><div class="inline"><button id="avg">Calculer</button></div><p class="msg" id="avgR"></p></div>
+<div><h3>Mes devoirs</h3><div class="inline" style="margin-top:0"><input type="text" id="tk" placeholder="Ex. Maths : exercices 4 à 6" style="flex:1 1 180px"><button class="pri" id="tkGo">Ajouter</button></div><div id="tasks"></div><p class="note">La liste reste enregistrée sur cet appareil.</p></div>
+</div></section>
+
+<section id="assistant" class="wide"><h2>Assistant IA</h2>
+<p class="note" style="margin:0 0 8px">Posez vos questions : cours, devoirs, santé, cuisine, idées…</p>
+<div id="chat" aria-live="polite"></div>
+<div class="inline"><input type="text" id="q" placeholder="Votre question" aria-label="Votre question"><button class="pri" id="ask">Demander</button><button id="clr">Effacer</button></div>
+<div class="inline"><button class="sug">Explique-moi la photosynthèse simplement</button><button class="sug">Comment mieux réviser avant un examen ?</button><button class="sug">Une idée de repas équilibré et pas cher</button></div></section>
+
+<section id="compte"><h2>Mon compte</h2>
+<div id="auOut">
+<div class="inline" style="margin-top:0"><button class="pri" id="gG">Continuer avec Google</button><button id="gF">Continuer avec Facebook</button></div>
+<h3>Ou avec une adresse e-mail</h3>
+<div class="opts"><input type="text" id="auName" placeholder="Prénom (pour créer un compte)" autocomplete="given-name"><input type="email" id="auMail" placeholder="Adresse e-mail" autocomplete="email"><input type="password" id="auPw" placeholder="Mot de passe (6 caractères minimum)" autocomplete="current-password"></div>
+<div class="inline"><button class="pri" id="auIn">Se connecter</button><button id="auUp">Créer un compte</button><button id="auRes">Mot de passe oublié ?</button></div></div>
+<div id="auIn2" style="display:none"><p id="auWho" style="margin:0"></p><div class="inline"><button id="auOutBtn">Se déconnecter</button></div></div>
+<p class="msg" id="auMsg"></p></section>
+
+<section id="messages"><h2>Messages</h2>
+<p class="note" id="msNote" style="margin:0"></p>
+<div id="msBox" style="display:none"><select id="msTo" aria-label="Destinataire"></select><div id="msList" aria-live="polite"></div>
+<div class="inline"><input type="text" id="msTxt" maxlength="1000" placeholder="Votre message" aria-label="Votre message" style="flex:1 1 200px"><button class="pri" id="msGo">Envoyer</button></div></div></section>
+</div>
+</main>
+
+<aside id="admin" aria-label="Administration">
+<h2>Actualiser le site</h2>
+<div id="login"><div class="inline" style="margin-top:0"><input type="password" id="pw" placeholder="Mot de passe" autocomplete="current-password"><button class="pri" id="pwGo">Entrer</button><button id="pwX">Fermer</button></div><p class="msg" id="pwMsg"></p></div>
+<div id="panel" style="display:none">
+<div class="inline" style="margin-top:0"><button class="pri" id="redraw">Nouveau tirage du jour</button><button id="resetAll">Revenir au tirage normal</button></div>
+<h3>Remplacer la citation du jour</h3>
+<div class="inline"><input type="text" id="cq" placeholder="Citation"><input type="text" id="ca" placeholder="Auteur"><button id="cqGo">Enregistrer</button></div>
+<h3>Ajouter un titre d’actualité</h3>
+<div class="inline"><input type="text" id="ht" placeholder="Titre"><input type="text" id="hu" placeholder="Lien (facultatif)"><button id="htGo">Ajouter</button><button id="htClr">Tout effacer</button></div>
+<div class="inline"><button id="out">Se déconnecter</button><button id="close">Fermer</button></div>
+<p class="msg" id="adMsg"></p>
+</div>
+</aside>
+
+<script>
+const HASH="bd1c346bc8e3d91a3e5ac1af1daa7c159be275b2eeeabf46dbb1a37d45038206";
+const $=s=>document.querySelector(s);
+const store={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},del(k){try{localStorage.removeItem(k)}catch(e){}}};
+
+const QUOTES=[
+["Cela semble toujours impossible, jusqu’à ce qu’on le fasse.","Nelson Mandela"],
+["On ne voit bien qu’avec le cœur. L’essentiel est invisible pour les yeux.","Antoine de Saint-Exupéry"],
+["Rien ne sert de courir ; il faut partir à point.","Jean de La Fontaine"],
+["Ce n’est pas parce que les choses sont difficiles que nous n’osons pas, c’est parce que nous n’osons pas qu’elles sont difficiles.","Sénèque"],
+["La vie, c’est comme une bicyclette : il faut avancer pour ne pas perdre l’équilibre.","Albert Einstein"],
+["Petit à petit, l’oiseau fait son nid.","Proverbe français"],
+["Il n’y a pas de vent favorable pour celui qui ne sait pas où il va.","Sénèque"],
+["Là où il y a une volonté, il y a un chemin.","Proverbe"],
+["Connais-toi toi-même.","Socrate"],
+["Mora mora : doucement, on arrive toujours à destination.","Esprit malgache"],
+["Qui va doucement va sûrement.","Proverbe"],
+["Tout ce qui ne me tue pas me rend plus fort.","Friedrich Nietzsche"],
+["Le meilleur moment pour planter un arbre était il y a vingt ans. Le deuxième meilleur moment, c’est maintenant.","Proverbe"],
+["Chaque matin est une page blanche : écris-y quelque chose dont tu seras fier.","Pour aujourd’hui"]
+];
+const RIDDLES=[
+["Qu’est-ce qui monte toujours et ne descend jamais ?","L’âge."],
+["J’ai des villes sans maisons, des forêts sans arbres et des fleuves sans eau. Qui suis-je ?","Une carte."],
+["Plus on en prend, plus on en laisse derrière soi. Qu’est-ce que c’est ?","Les pas."],
+["Qu’est-ce qui a des dents mais ne mord jamais ?","Un peigne."],
+["Je parle sans bouche et j’entends sans oreilles. Qui suis-je ?","L’écho."],
+["Qu’est-ce qui t’appartient, mais que les autres utilisent plus que toi ?","Ton prénom."],
+["Plus il y en a, moins on voit. Qu’est-ce que c’est ?","L’obscurité."],
+["Qu’est-ce qui a un cou mais pas de tête ?","Une bouteille."],
+["On me remplit de trous pour que je retienne l’eau. Qui suis-je ?","Une éponge."],
+["Qu’est-ce qui se brise dès qu’on prononce son nom ?","Le silence."],
+["Quel animal marche à quatre pattes le matin, à deux à midi et à trois le soir ?","L’être humain."],
+["Qu’est-ce qui voyage tout autour du monde en restant dans son coin ?","Un timbre."]
+];
+const TRIVIA=[
+["Quelle est la capitale de Madagascar ?",["Toamasina","Antananarivo","Mahajanga"],1],
+["Quel animal est l’emblème de Madagascar ?",["Le lémurien","Le koala","Le panda"],0],
+["Quel est le premier producteur mondial de vanille ?",["Le Brésil","L’Inde","Madagascar"],2],
+["Quelle planète est surnommée la planète rouge ?",["Mars","Vénus","Jupiter"],0],
+["Qui a peint la Joconde ?",["Michel-Ange","Léonard de Vinci","Raphaël"],1],
+["Quel est le symbole chimique de l’or ?",["Or","Ag","Au"],2],
+["Quel est le plus long fleuve d’Afrique ?",["Le Nil","Le Congo","Le Niger"],0],
+["Combien de côtés a un hexagone ?",["5","6","8"],1],
+["Quel est le plus grand océan du monde ?",["Atlantique","Indien","Pacifique"],2],
+["Quelle langue est officielle à Madagascar avec le français ?",["Le swahili","Le malgache","L’anglais"],1],
+["Dans quel pays se trouvent les pyramides de Gizeh ?",["Égypte","Mexique","Soudan"],0],
+["Quel gaz les plantes absorbent-elles pour la photosynthèse ?",["L’oxygène","L’azote","Le dioxyde de carbone"],2]
+];
+const WORDS=["PLAGE","MANGO","ROUTE","FLEUR","NUAGE","TIGRE","LIVRE","PIANO","SABLE","FORET","ORAGE","CARTE","VAGUE","ZEBRE","BALLE","TABLE","SUCRE","LUMEN"].filter(w=>w!=="LUMEN");
+const TIPS={
+"Sport":["Marchez dix minutes après le repas : c’est simple et bon pour la digestion.","Faites vingt squats en attendant que l’eau chauffe.","Prenez les escaliers plutôt que l’ascenseur aujourd’hui.","Étirez nuque et épaules deux minutes toutes les heures assis.","Dix pompes, même contre un mur, suffisent pour démarrer.","Une séance courte et régulière vaut mieux qu’une longue et rare.","Marchez en téléphonant : chaque appel devient un petit exercice."],
+"Santé":["Buvez un verre d’eau au réveil.","Visez sept à neuf heures de sommeil : couchez-vous trente minutes plus tôt.","Lavez-vous les mains avant chaque repas.","Prenez dix minutes de lumière naturelle le matin.","Toutes les vingt minutes d’écran, regardez au loin vingt secondes.","Aérez votre chambre quelques minutes chaque jour.","Redressez-vous : épaules basses, dos long, respiration calme."],
+"Nourriture":["Ajoutez un fruit de saison à votre petit-déjeuner : mangue, litchi ou banane.","Remplacez une boisson sucrée par de l’eau ou une infusion.","Mettez des légumes dans au moins deux repas.","Associez riz et légumineuses (haricots, pois du Cap) pour un repas complet.","Mangez lentement : la satiété arrive après vingt minutes.","Gardez une poignée de noix ou d’arachides pour le coup de fringale.","Préférez les fruits entiers aux jus."],
+"Mental":["Respirez : quatre secondes en inspirant, six en expirant, cinq fois.","Notez trois choses qui se sont bien passées aujourd’hui.","Éteignez les notifications pendant une heure.","Appelez un proche que vous n’avez pas entendu depuis longtemps.","Faites une seule chose à la fois pendant quinze minutes.","Sortez cinq minutes, sans téléphone.","Écrivez ce qui vous pèse, puis choisissez une petite action."]
+};
+const SIGNS=[["Bélier","21 mars – 19 avril"],["Taureau","20 avril – 20 mai"],["Gémeaux","21 mai – 20 juin"],["Cancer","21 juin – 22 juillet"],["Lion","23 juillet – 22 août"],["Vierge","23 août – 22 septembre"],["Balance","23 septembre – 22 octobre"],["Scorpion","23 octobre – 21 novembre"],["Sagittaire","22 novembre – 21 décembre"],["Capricorne","22 décembre – 19 janvier"],["Verseau","20 janvier – 18 février"],["Poissons","19 février – 20 mars"]];
+const HORO={
+"Amour":["Une conversation sincère rapproche deux cœurs.","Écoutez avant de répondre : un malentendu se dissipe.","Un geste simple vaut mieux qu’un grand discours.","Une rencontre inattendue pourrait vous faire sourire.","Prenez du temps pour ceux que vous aimez.","Le dialogue apaise une tension ancienne."],
+"Travail":["Une idée oubliée mérite d’être relancée.","Priorisez : une tâche bien finie vaut plus que trois entamées.","Un collègue peut vous apporter une aide précieuse.","Votre régularité finit par être remarquée.","Osez demander ce dont vous avez besoin.","Une opportunité demande de la patience."],
+"Énergie":["Votre énergie est stable : profitez-en pour avancer.","Ménagez-vous un temps de pause en milieu de journée.","Le mouvement vous fera du bien.","Couchez-vous tôt pour récupérer.","Un repas léger vous gardera alerte.","Une promenade vous remettra les idées en place."]};
+const COLORS=["bleu lagon","jaune mangue","vert prairie","rouge latérite","violet jacaranda","blanc coton","orange coucher de soleil"];
+
+function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function today(){const n=new Date();return{y:n.getFullYear(),m:n.getMonth(),d:n.getDate(),key:n.getFullYear()+"-"+(n.getMonth()+1)+"-"+n.getDate()}}
+function seed(){const t=today();return Math.floor(Date.UTC(t.y,t.m,t.d)/864e5)+store.get("offset",0)}
+const pick=(a,s)=>a[((s%a.length)+a.length)%a.length];
+
+let shownKey=today().key;
+let game={word:"",rows:[],over:false};
+
+function renderQuote(){
+  const c=store.get("quote:"+today().key,null),s=seed();
+  const q=c||pick(QUOTES,s);
+  $("#quote").textContent="« "+q[0]+" »";$("#who").textContent=q[1];
+}
+function renderDate(){
+  const s=new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).format(new Date());
+  $("#date").textContent=s.charAt(0).toUpperCase()+s.slice(1);
+}
+function renderBoard(){
+  let h="";
+  for(let r=0;r<6;r++){
+    h+='<div class="row">';
+    for(let c=0;c<5;c++){
+      const row=game.rows[r];
+      h+=row?'<div class="t '+row.res[c]+'">'+row.w[c]+'</div>':'<div class="t"></div>';
+    }
+    h+="</div>";
+  }
+  $("#board").innerHTML=h;
+}
+function evalGuess(w,t){
+  const res=Array(5).fill("x"),left={};
+  for(let i=0;i<5;i++){if(w[i]===t[i])res[i]="g";else left[t[i]]=(left[t[i]]||0)+1}
+  for(let i=0;i<5;i++){if(res[i]!=="g"&&left[w[i]]>0){res[i]="y";left[w[i]]--}}
+  return res;
+}
+function newGame(){
+  game={word:pick(WORDS,seed()),rows:[],over:false};
+  $("#mm").textContent="";$("#guess").value="";renderBoard();
+}
+function submitGuess(){
+  if(game.over)return;
+  const w=$("#guess").value.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase().replace(/[^A-Z]/g,"");
+  if(w.length!==5){$("#mm").textContent="Entrez un mot de 5 lettres.";return}
+  game.rows.push({w,res:evalGuess(w,game.word)});$("#guess").value="";renderBoard();
+  if(w===game.word){game.over=true;$("#mm").textContent="Bravo ! Trouvé en "+game.rows.length+" essai"+(game.rows.length>1?"s":"")+".";}
+  else if(game.rows.length===6){game.over=true;$("#mm").textContent="Perdu. Le mot était "+game.word+".";}
+  else $("#mm").textContent="Il vous reste "+(6-game.rows.length)+" essai"+(6-game.rows.length>1?"s":"")+".";
+}
+function renderRiddle(){
+  const r=pick(RIDDLES,seed());$("#riddle").textContent=r[0];$("#ans").textContent="";
+  $("#showR").onclick=()=>{$("#ans").textContent=r[1]};
+}
+function renderTrivia(){
+  const q=pick(TRIVIA,seed()+3);$("#tq").textContent=q[0];$("#tr").textContent="";
+  const box=$("#opts");box.innerHTML="";
+  q[1].forEach((o,i)=>{
+    const b=document.createElement("button");b.textContent=o;
+    b.onclick=()=>{
+      [...box.children].forEach((x,j)=>{x.disabled=true;if(j===q[2])x.className="good";else if(j===i)x.className="bad"});
+      $("#tr").textContent=i===q[2]?"Bonne réponse !":"Raté. La bonne réponse : "+q[1][q[2]]+".";
+    };
+    box.appendChild(b);
+  });
+}
+function renderTips(){
+  const s=seed();
+  $("#tips").innerHTML=Object.entries(TIPS).map(([k,a],i)=>'<div class="tip"><b>'+k+'</b><span>'+pick(a,s+i*2)+'</span></div>').join("");
+}
+function renderHoro(){
+  const i=Number($("#sign").value),s=seed(),r=mulberry(s*13+i*101+7);
+  const p=a=>a[Math.floor(r()*a.length)];
+  $("#signName").textContent=SIGNS[i][0]+" — "+SIGNS[i][1];
+  $("#horo").innerHTML=Object.entries(HORO).map(([k,a])=>'<div class="tip"><b>'+k+'</b><span>'+p(a)+'</span></div>').join("")+
+    '<div class="tip"><b>Chance</b><span>Chiffre '+(1+Math.floor(r()*99))+', couleur '+p(COLORS)+'.</span></div>';
+}
+function renderNews(){
+  const l=store.get("news",[]);
+  $("#hl").innerHTML=l.length?l.map(n=>'<div class="hl">'+(n.u?'<a href="'+n.u+'" target="_blank" rel="noopener"></a>':'<span></span>')+'</div>').join(""):"";
+  [...$("#hl").children].forEach((d,i)=>{(d.firstChild).textContent=l[i].t});
+}
+function renderAll(){renderDate();renderQuote();newGame();renderRiddle();renderTrivia();renderTips();renderHoro();renderNews();renderTasks()}
+
+// Signe
+SIGNS.forEach((s,i)=>{const o=document.createElement("option");o.value=i;o.textContent=s[0];$("#sign").appendChild(o)});
+$("#sign").value=store.get("sign",0);
+$("#sign").onchange=()=>{store.set("sign",Number($("#sign").value));renderHoro()};
+$("#go").onclick=submitGuess;
+$("#guess").addEventListener("keydown",e=>{if(e.key==="Enter")submitGuess()});
+
+// Mise à jour automatique : chaque minute, on vérifie si le jour a changé
+setInterval(()=>{const k=today().key;if(k!==shownKey){shownKey=k;renderAll()}},60000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden){const k=today().key;if(k!==shownKey){shownKey=k;renderAll()}}});
+
+// Mode admin
+async function sha(t){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}
+let unlocked=false;
+function showAdmin(){$("#admin").classList.add("open");$("#login").style.display=unlocked?"none":"block";$("#panel").style.display=unlocked?"block":"none";$("#pwMsg").textContent="";$("#adMsg").textContent=""}
+$("#adminBtn").onclick=showAdmin;
+$("#pwX").onclick=$("#close").onclick=()=>$("#admin").classList.remove("open");
+$("#pwGo").onclick=async()=>{
+  let ok=false;try{ok=(await sha($("#pw").value))===HASH}catch(e){}
+  $("#pw").value="";
+  if(ok){unlocked=true;showAdmin()}else $("#pwMsg").textContent="Mot de passe incorrect.";
+};
+$("#pw").addEventListener("keydown",e=>{if(e.key==="Enter")$("#pwGo").click()});
+$("#out").onclick=()=>{unlocked=false;showAdmin()};
+$("#redraw").onclick=()=>{store.set("offset",store.get("offset",0)+1);store.del("quote:"+today().key);renderAll();$("#adMsg").textContent="Nouveau tirage appliqué."};
+$("#resetAll").onclick=()=>{store.del("offset");store.del("quote:"+today().key);renderAll();$("#adMsg").textContent="Tirage normal rétabli."};
+$("#cqGo").onclick=()=>{const q=$("#cq").value.trim();if(!q){$("#adMsg").textContent="Écrivez une citation.";return}store.set("quote:"+today().key,[q,$("#ca").value.trim()||"Anonyme"]);$("#cq").value=$("#ca").value="";renderQuote();$("#adMsg").textContent="Citation remplacée pour aujourd’hui."};
+$("#htGo").onclick=()=>{const t=$("#ht").value.trim();if(!t){$("#adMsg").textContent="Écrivez un titre.";return}let u=$("#hu").value.trim();if(u&&!/^https?:\/\//i.test(u))u="https://"+u;const l=store.get("news",[]);l.unshift({t,u});store.set("news",l.slice(0,12));$("#ht").value=$("#hu").value="";renderNews();$("#adMsg").textContent="Titre ajouté."};
+$("#htClr").onclick=()=>{store.del("news");renderNews();$("#adMsg").textContent="Titres effacés."};
+
+// Espace étudiant
+let pT=1500,pEnd=0,pI=null;
+function pShow(){$("#pomo").textContent=String(Math.floor(pT/60)).padStart(2,"0")+":"+String(pT%60).padStart(2,"0")}
+function pStop(){clearInterval(pI);pI=null}
+function pSet(n){pStop();pT=n;pShow();$("#pmsg").textContent=""}
+$("#pGo").onclick=()=>{if(pI||pT<=0)return;pEnd=Date.now()+pT*1000;pI=setInterval(()=>{pT=Math.max(0,Math.round((pEnd-Date.now())/1000));pShow();if(pT<=0){pStop();$("#pmsg").textContent="Terminé ! Prenez une pause."}},500)};
+$("#pPause").onclick=pStop;$("#p25").onclick=()=>pSet(1500);$("#p5").onclick=()=>pSet(300);
+function renderTasks(){const l=store.get("tasks",[]),box=$("#tasks");box.innerHTML="";l.forEach((t,i)=>{const d=document.createElement("div");d.className="tip";const c=document.createElement("input");c.type="checkbox";c.checked=t.d;c.setAttribute("aria-label","Terminé");c.onchange=()=>{l[i].d=c.checked;store.set("tasks",l);renderTasks()};const s=document.createElement("span");s.style.flex="1";s.textContent=t.t;if(t.d)s.style.textDecoration="line-through";const x=document.createElement("button");x.textContent="Supprimer";x.onclick=()=>{l.splice(i,1);store.set("tasks",l);renderTasks()};d.append(c,s,x);box.appendChild(d)})}
+function addTask(){const t=$("#tk").value.trim();if(!t)return;const l=store.get("tasks",[]);l.unshift({t,d:false});store.set("tasks",l.slice(0,50));$("#tk").value="";renderTasks()}
+$("#tkGo").onclick=addTask;$("#tk").addEventListener("keydown",e=>{if(e.key==="Enter")addTask()});
+$("#avg").onclick=()=>{let s=0,c=0;$("#notes").value.split("\n").forEach(L=>{const p=L.trim().replace(/,/g,".").split(/\s+/).map(Number);if(p.length>=2&&p[0]>=0&&p[1]>0&&!isNaN(p[0])&&!isNaN(p[1])){s+=p[0]*p[1];c+=p[1]}});$("#avgR").textContent=c?"Moyenne : "+(s/c).toFixed(2).replace(".",",")+" / 20":"Entrez au moins une ligne : note puis coefficient."};
+pShow();
+
+// Assistant IA (Claude)
+let sampleNS=null,chat=[],busy=false;
+const SYS="Tu es l’assistant du site N.O.H (Nouveaux Objectifs, Horizons), un site quotidien malgache. Réponds dans la langue de la question (français par défaut), de façon claire, courte et bienveillante. Pour les élèves et étudiants, explique pas à pas. Pour la santé, donne des conseils généraux et recommande un professionnel si nécessaire.";
+if(window.claude&&claude.use){claude.use("sample").then(s=>{sampleNS=s}).catch(()=>{})}
+function bubble(role,text){const d=document.createElement("div");d.className="b "+role;d.textContent=text;$("#chat").appendChild(d);$("#chat").scrollTop=1e9;return d}
+async function ask(text){
+  text=text.trim();if(busy||!text)return;
+  if(!sampleNS){bubble("ai","L’assistant n’est pas disponible dans cette vue. Ouvrez la page depuis votre compte Claude.");return}
+  bubble("user",text);$("#q").value="";chat.push({role:"user",content:text});
+  let h=chat.slice(-9).map(m=>({role:m.role,content:m.content}));while(h.length&&h[0].role!=="user")h.shift();
+  h[0].content=SYS+"\n\n"+h[0].content;
+  const el=bubble("ai","…");busy=true;$("#ask").disabled=true;
+  try{const r=await sampleNS(h,{cache:false,onText:({text})=>{el.textContent=text}});el.textContent=r.text;chat.push({role:"assistant",content:r.text})}
+  catch(e){chat.pop();el.textContent=e&&e.code==="not_granted"?"Autorisation refusée : l’assistant ne peut pas répondre.":e&&e.code==="rate_limited"?"Trop de demandes, réessayez dans un instant.":"Une erreur est survenue. Réessayez."}
+  busy=false;$("#ask").disabled=false;
+}
+$("#ask").onclick=()=>ask($("#q").value);
+$("#q").addEventListener("keydown",e=>{if(e.key==="Enter")ask($("#q").value)});
+$("#clr").onclick=()=>{chat=[];$("#chat").innerHTML=""};
+document.querySelectorAll(".sug").forEach(b=>b.onclick=()=>ask(b.textContent));
+
+// Comptes et messages (Firebase) : remplacez les 4 valeurs COLLEZ_ICI
+const FB={apiKey:"COLLEZ_ICI",authDomain:"COLLEZ_ICI",projectId:"COLLEZ_ICI",appId:"COLLEZ_ICI"};
+let auth=null,fdb=null,me=null,unsubMsg=null,unsubUsers=null,chatFor="";
+const AM=m=>{$("#auMsg").textContent=m};
+const ERR={"auth/invalid-credential":"E-mail ou mot de passe incorrect.","auth/wrong-password":"E-mail ou mot de passe incorrect.","auth/user-not-found":"Aucun compte avec cette adresse.","auth/email-already-in-use":"Cette adresse a déjà un compte. Connectez-vous.","auth/weak-password":"Mot de passe trop court (6 caractères minimum).","auth/invalid-email":"Adresse e-mail invalide.","auth/popup-closed-by-user":"Connexion annulée.","auth/too-many-requests":"Trop d’essais. Réessayez plus tard.","auth/network-request-failed":"Problème de connexion internet.","auth/account-exists-with-different-credential":"Cette adresse existe déjà avec une autre méthode de connexion."};
+const fail=e=>AM(ERR[e&&e.code]||"Une erreur est survenue. Réessayez.");
+if(window.firebase&&FB.apiKey!=="COLLEZ_ICI"){try{firebase.initializeApp(FB);auth=firebase.auth();fdb=firebase.firestore();auth.languageCode="fr"}catch(e){auth=fdb=null}}
+$("#msNote").textContent=auth?"Connectez-vous pour envoyer des messages.":"Les messages seront disponibles dès que les comptes seront configurés.";
+const need=()=>{if(!auth){AM("Les comptes ne sont pas encore configurés sur ce site.");return false}AM("");return true};
+const nameOf=u=>u.displayName||(u.email||"Membre").split("@")[0];
+function showUser(u){$("#auOut").style.display=u?"none":"block";$("#auIn2").style.display=u?"block":"none";if(u)$("#auWho").textContent="Connecté : "+nameOf(u)+(u.email?" ("+u.email+")":"")}
+$("#gG").onclick=()=>need()&&auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(fail);
+$("#gF").onclick=()=>need()&&auth.signInWithPopup(new firebase.auth.FacebookAuthProvider()).catch(fail);
+$("#auIn").onclick=()=>{if(need())auth.signInWithEmailAndPassword($("#auMail").value.trim(),$("#auPw").value).catch(fail)};
+$("#auUp").onclick=async()=>{if(!need())return;const n=$("#auName").value.trim();if(!n){AM("Entrez votre prénom.");return}
+  try{const c=await auth.createUserWithEmailAndPassword($("#auMail").value.trim(),$("#auPw").value);await c.user.updateProfile({displayName:n});await fdb.collection("users").doc(c.user.uid).set({name:n});showUser(c.user)}catch(e){fail(e)}};
+$("#auRes").onclick=async()=>{if(!need())return;const m=$("#auMail").value.trim();if(!m){AM("Entrez votre adresse e-mail, puis cliquez à nouveau.");return}
+  try{await auth.sendPasswordResetEmail(m);AM("E-mail envoyé : vérifiez votre boîte de réception et les spams.")}catch(e){fail(e)}};
+$("#auOutBtn").onclick=()=>{if(auth)auth.signOut()};
+function stopMsgs(){if(unsubMsg){unsubMsg();unsubMsg=null}if(unsubUsers){unsubUsers();unsubUsers=null}chatFor="";$("#msList").innerHTML=""}
+const ref=t=>t==="salon"?fdb.collection("salon"):fdb.collection("chats").doc([me.uid,t].sort().join("_")).collection("messages");
+function openChat(){
+  const t=$("#msTo").value;if(t===chatFor&&unsubMsg)return;chatFor=t;
+  if(unsubMsg)unsubMsg();$("#msList").innerHTML="";
+  unsubMsg=ref(t).orderBy("ts").limitToLast(100).onSnapshot(s=>{
+    const box=$("#msList");box.innerHTML="";
+    s.forEach(d=>{const m=d.data(),mine=m.from===me.uid,b=document.createElement("div");b.className="b "+(mine?"user":"ai");const n=document.createElement("strong");n.textContent=mine?"Moi":(m.name||"Membre");const x=document.createElement("div");x.textContent=m.text;b.append(n,x);box.appendChild(b)});
+    box.scrollTop=1e9;
+  },()=>{$("#msNote").textContent="Impossible de lire les messages. Vérifiez les règles Firestore."});
+}
+function startMsgs(){
+  $("#msBox").style.display="block";$("#msNote").textContent="";
+  unsubUsers=fdb.collection("users").onSnapshot(s=>{
+    const sel=$("#msTo"),cur=sel.value||"salon";sel.innerHTML="";
+    const add=(v,t)=>{const o=document.createElement("option");o.value=v;o.textContent=t;sel.appendChild(o)};
+    add("salon","Salon général (tout le monde)");
+    s.forEach(d=>{if(d.id!==me.uid)add(d.id,d.data().name||"Membre")});
+    sel.value=[...sel.options].some(o=>o.value===cur)?cur:"salon";openChat();
+  },()=>{});
+}
+$("#msTo").onchange=openChat;
+async function send(){const t=$("#msTxt").value.trim();if(!t||!me)return;$("#msTxt").value="";
+  try{await ref($("#msTo").value).add({from:me.uid,name:nameOf(me),text:t.slice(0,1000),ts:firebase.firestore.FieldValue.serverTimestamp()})}catch(e){$("#msNote").textContent="Envoi impossible. Réessayez."}}
+$("#msGo").onclick=send;$("#msTxt").addEventListener("keydown",e=>{if(e.key==="Enter")send()});
+if(auth)auth.onAuthStateChanged(u=>{me=u;showUser(u);stopMsgs();
+  if(u){fdb.collection("users").doc(u.uid).set({name:nameOf(u)},{merge:true}).catch(()=>{});startMsgs()}
+  else{$("#msBox").style.display="none";$("#msNote").textContent="Connectez-vous pour envoyer des messages."}});
+
+renderAll();
+</script>
+</body>
+</html>
